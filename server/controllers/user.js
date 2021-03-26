@@ -4,7 +4,7 @@ module.exports = {
     register: async (req, res) => {
         const {username, password} = req.body
         const db = req.app.get('db')
-        const result = await db.find_user_by_username(username)
+        const result = await db.user.find_user_by_username(username)
         const existingUser = result[0]
 
         if(existingUser) {
@@ -14,7 +14,7 @@ module.exports = {
         const salt = bcrypt.genSaltSync(10)
         const hash = bcrypt.hashSync(password, salt)
 
-        const registeredUser = await db.create_user(username, hash, `https://robohash.org/${username}.png`)
+        const registeredUser = await db.user.create_user(username, hash, `https://robohash.org/${username}.png`)
         const newUser = registeredUser[0]
 
         req.session.user = newUser
@@ -26,14 +26,14 @@ module.exports = {
         const {username, password} = req.body
         const db = req.app.get('db')
 
-        const foundUser = await db.find_user_by_username(username)
-        const existingUser = foundUser[0]
+        const result = await db.user.find_user_by_username(username)
+        const existingUser = result[0]
 
         if(!existingUser) {
             return res.status(401).send('User not found. Please register as a new user.')
         }
 
-        const isAuth = bcrypt.compareSync(password, existingUser.hash)
+        const isAuth = bcrypt.compareSync(password, existingUser.password)
 
         if(!isAuth) {
             return res.status(403).send('Incorrect password')
@@ -44,12 +44,12 @@ module.exports = {
         return res.status(200).send(req.session.user)
     },
 
-    getUser: async (req, res, next) => {
+    getUser: async (req, res) => {
         if(!req.session.user) {
             res.sendStatus(404)
         }
 
-        next()
+        res.status(200).send(req.session.user)
     },
 
     logout: async (req, res) => {
