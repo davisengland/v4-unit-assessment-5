@@ -16,7 +16,7 @@ module.exports = {
 
         const registeredUser = await db.user.create_user(username, hash, `https://robohash.org/${username}.png`)
         const newUser = registeredUser[0]
-
+        
         req.session.user = newUser
 
         return res.status(200).send(newUser)
@@ -25,10 +25,10 @@ module.exports = {
     login: async (req, res) => {
         const {username, password} = req.body
         const db = req.app.get('db')
-
+        console.log(username, password)
         const result = await db.user.find_user_by_username(username)
         const existingUser = result[0]
-
+        console.log(existingUser)
         if(!existingUser) {
             return res.status(401).send('User not found. Please register as a new user.')
         }
@@ -38,9 +38,9 @@ module.exports = {
         if(!isAuth) {
             return res.status(403).send('Incorrect password')
         }
-
+        console.log(existingUser)
         req.session.user = existingUser
-
+        console.log(req.session.user)
         return res.status(200).send(existingUser)
     },
 

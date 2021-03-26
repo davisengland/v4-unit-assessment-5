@@ -27,6 +27,7 @@ class Auth extends Component {
     axios.post('/api/auth/login', this.state)
       .then(res => {
         updateUser({username: res.data.username, profile_pic: res.data.profile_pic})
+        
       })
       .catch(err => {
         console.log(err)
@@ -37,6 +38,7 @@ class Auth extends Component {
   register() {
     axios.post('/api/auth/register', this.state)
       .then(res => {
+        console.log(res.data)
         updateUser({username: res.data.username, profile_pic: res.data.profile_pic})
       })
       .catch(err => {
