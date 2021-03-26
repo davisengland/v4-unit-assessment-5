@@ -19,7 +19,7 @@ module.exports = {
 
         req.session.user = newUser
 
-        return res.status(200).send(req.session.user)
+        return res.status(200).send(newUser)
     },
 
     login: async (req, res) => {
@@ -41,7 +41,7 @@ module.exports = {
 
         req.session.user = existingUser
 
-        return res.status(200).send(req.session.user)
+        return res.status(200).send(existingUser)
     },
 
     getUser: async (req, res) => {
